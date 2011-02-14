@@ -77,7 +77,7 @@ function validate() {
 	}
 	
 	// bathrooms validation
-	bathroomRegEx = /^\d{1,2}$/;
+	bathroomRegEx = /^(\d|\.){1,}$/;
 	if (bathroomRegEx.test(document.getElementById("bathrooms").value) == false) {
 		if (!document.getElementById("bathroomsErrorField")) {
 			var bathroomsErrorField = document.createElement("span");
@@ -88,6 +88,22 @@ function validate() {
 		}
 	} else {
 		var removeError = document.getElementById("bathroomsErrorField");
+		if (removeError) {
+			removeError.parentNode.removeChild(removeError);
+		}
+	}
+	
+	// garage validation
+	if (document.getElementById("garageStalls").value == "none") {
+		if (!document.getElementById("garageStallsErrorField")) {
+			var garageStallsErrorField = document.createElement("span");
+			garageStallsErrorField.setAttribute("id", "garageStallsErrorField");
+			garageStallsErrorField.className = "errorField";
+			garageStallsErrorField.appendChild(document.createTextNode("You must select the number of garage stalls."));
+			document.getElementById("inputGarageStallsContainer").appendChild(garageStallsErrorField);
+		}
+	} else {
+		var removeError = document.getElementById("garageStallsErrorField");
 		if (removeError) {
 			removeError.parentNode.removeChild(removeError);
 		}
