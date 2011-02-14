@@ -1,0 +1,41 @@
+#wrapper {
+	margin: 5px auto;
+	width: 700px;
+}
+h1 {
+	margin:5px;
+	font-size:18px;
+}
+h2 {
+	font-size:18px;
+	margin:5px 5px 20px 5px;
+}
+form {
+	width:655px;
+	margin:0 auto;
+}
+label {
+	font-size:18px;
+	font-weight:100;
+	width:150px;
+	display:inline-block;
+}
+input[type="button"] {
+	border:solid;
+	float:right;
+}
+
+div.button {
+	width: 225px;
+}
+.errorField {
+	padding:0px 3px;
+	color:white;
+	background:gray;
+	border:solid black 1px;
+	float:right;
+	width:325px;
+}
+.inputContainer {
+	margin:10px 5px;
+}
