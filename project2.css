@@ -35,3 +35,6 @@ input[type="button"] {
 .inputContainer {
 	margin:10px 5px;
 }
+.costOutput {
+	border:solid green;
+}
