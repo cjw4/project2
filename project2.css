@@ -22,12 +22,8 @@ label {
 }
 input[type="button"] {
 	border:solid;
-	float:right;
 }
 
-div.button {
-	width: 225px;
-}
 .errorField {
 	padding:0px 3px;
 	color:white;

@@ -11,6 +11,8 @@ function init() {
 
 function validate() {
 	
+	var house = new House();
+	
 	// Levels validation
 	if (!document.getElementById("1").checked && !document.getElementById("2").checked) {
 		if (!document.getElementById("levelsErrorField")) {
@@ -22,6 +24,7 @@ function validate() {
 		}
 	} else {
 		var removeError = document.getElementById("levelsErrorField");
+		house.setLevels("1");
 		if (removeError) {
 			removeError.parentNode.removeChild(removeError);
 		}
@@ -108,6 +111,31 @@ function validate() {
 			removeError.parentNode.removeChild(removeError);
 		}
 	}
+	
+	if (!document.getElementById("levelsErrorField") && !document.getElementById("squareFootErrorField")
+	&& !document.getElementById("styleErrorField") && !document.getElementById("bedroomsErrorField") 
+	&& !document.getElementById("bathroomsErrorField") && !document.getElementById("garageStallsErrorField")) {
+		if (!document.getElementById("output")) {
+			
+			// create an output div
+			var output = document.createElement("div");
+			output.setAttribute("id", "output");
+			output.appendChild(document.createTextNode("Here is the calculation for the cost of your house:"));
+			
+			// calculation for squareFootage cost 
+			var squareFootOutput = document.createElement("div");	
+			house.setSquareFeet(document.getElementById("squareFeet").value);
+			squareFootOutput.appendChild(document.createTextNode("Square Footage Cost: " + house.getSquareFeet()));
+			output.appendChild(squareFootOutput);
+
+			document.getElementById("wrapper").appendChild(output);
+		}
+	} else {
+		var removeOutput = document.getElementById("output");
+		if (removeOutput) {
+			removeOutput.parentNode.removeChild(removeOutput);
+		}
+	}
 }
 
 function House() {
@@ -133,7 +161,7 @@ function House() {
 	this.getSquareFeet = function() {
 		return squareFeet;
 	}
-	this.setLevels = function(input) {
+	this.setSquareFeet = function(input) {
 		squareFeet = input;
 	}
 	
@@ -141,7 +169,7 @@ function House() {
 	this.getStyle = function() {
 		return style;
 	}
-	this.setLevels = function(input) {
+	this.setStyle = function(input) {
 		style = input;
 	}
 	
@@ -167,6 +195,16 @@ function House() {
 	}
 	this.setLevels = function(input) {
 		garageStalls = input;
+	}
+	
+	// calculate the cost of the house
+	this.calculateCost = function(levels, squareFeet, style, bedrooms, bathrooms, garageStalls) {
+		var additionalCost = 15000*bedrooms + 20000*bathrooms + 5000*garageStalls;
+		if (levels == "1") {
+			var totalCost = 115*squareFeet + additionalCost;
+		} else {
+			var totalCost = 100*squareFeet + additionalCost;
+		}
 	}
 }
 
