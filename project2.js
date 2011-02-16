@@ -1,5 +1,11 @@
 function init() {
 	
+	// dynamically add a wrapper div tag if in browser mode
+	if (window.innerWidth && window.innerWidth >= 480) {
+		var wrapper = document.createElement("div");
+		wrapper.setAttribute("id", "wrapper");
+		document.body.appendChild(wrapper);
+	}
 	// add the onlick event to the calculate button
 	var button = document.getElementById("button_click");
 	if(window.addEventListener) {
