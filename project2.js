@@ -23,11 +23,9 @@ function validate() {
 	var bathrooms = document.getElementById("bathrooms").value;
 	var garageStalls = document.getElementById("garageStalls").value;
 	
-	// Create an new instance of the house Class named house
-	var house = new House();
 	
 	// Validate that either 1 or 2 levels are selected
-	if (!document.getElementById("1").checked && !document.getElementById("2").checked) {
+	if (!levels1.checked && !levels2.checked) {
 		
 		// if there is no error message show an error message
 		if (!document.getElementById("levelsErrorField")) {
@@ -42,12 +40,6 @@ function validate() {
 	} else {
 		var removeError = document.getElementById("levelsErrorField");
 		
-		if (document.getElementById("1").checked) {
-		house.setLevels("1");
-		} else {
-			house.setLevels("2");
-		}
-		
 		// if there is an error message remove it
 		if (removeError) {
 			removeError.parentNode.removeChild(removeError);
@@ -55,13 +47,13 @@ function validate() {
 	}
 	
 	// squareFootage validation
-	squareFootRegEx = /^\d{1,5}$/;
-	if (squareFootRegEx.test(document.getElementById("squareFeet").value) == false) {
+	squareFootRegEx = /^\d{1,4}$/;
+	if (squareFootRegEx.test(squareFeet) == false) {
 		if (!document.getElementById("squareFootErrorField")) {
 			var squareFootErrorField = document.createElement("span");
 			squareFootErrorField.setAttribute("id", "squareFootErrorField");
 			squareFootErrorField.className = "errorField";
-			squareFootErrorField.appendChild(document.createTextNode("You must provide a square footage under 100,000."));
+			squareFootErrorField.appendChild(document.createTextNode("You must provide a square footage under 10,000."));
 			document.getElementById("inputSquareFeetContainer").appendChild(squareFootErrorField);
 		}
 	} else {
@@ -88,7 +80,7 @@ function validate() {
 	}
 	
 	// bedroom validation 
-	if (document.getElementById("bedrooms").value == "none") {
+	if (bedrooms == "none") {
 		if (!document.getElementById("bedroomsErrorField")) {
 			var bedroomsErrorField = document.createElement("span");
 			bedroomsErrorField.setAttribute("id", "bedroomsErrorField");
@@ -105,7 +97,7 @@ function validate() {
 	
 	// bathrooms validation
 	bathroomRegEx = /^(\d|\.){1,}$/;
-	if (bathroomRegEx.test(document.getElementById("bathrooms").value) == false) {
+	if (bathroomRegEx.test(bathrooms) == false) {
 		if (!document.getElementById("bathroomsErrorField")) {
 			var bathroomsErrorField = document.createElement("span");
 			bathroomsErrorField.setAttribute("id", "bathroomsErrorField");
@@ -121,7 +113,7 @@ function validate() {
 	}
 	
 	// garage validation
-	if (document.getElementById("garageStalls").value == "none") {
+	if (garageStalls == "none") {
 		if (!document.getElementById("garageStallsErrorField")) {
 			var garageStallsErrorField = document.createElement("span");
 			garageStallsErrorField.setAttribute("id", "garageStallsErrorField");
@@ -144,24 +136,43 @@ function validate() {
 		// as long as there is no output already
 		if (!document.getElementById("output")) {
 			
-			// create an output div
+			// create an output div: <div id="output">Here is the calculation for the cost of your house:</div>
 			var output = document.createElement("div");
 			output.setAttribute("id", "output");
 			output.appendChild(document.createTextNode("Here is the calculation for the cost of your house:"));
 			
-			// ----------------------- squareFootage cost -----------------------------------
+			// Create an new instance of the house Class named house and set its values
+			var house = new House();
+			house.setSquareFeet(squareFeet);
+			house.setBedrooms(bedrooms);
+			house.setBathrooms(bathrooms);
+			house.setGarageStalls(garageStalls);
+			
+			
+			// ---------------------------------------------- squareFootage cost -----------------------------------
 			
 			// calculation for squareFootage cost 
-			var squareFootOutput = document.createElement("div");	
-			house.setSquareFeet(document.getElementById("squareFeet").value);
 			if (document.getElementById("1").checked) {
 				multiplier = "115";
 			} else {
 				multiplier = "100";
 			}
-			squareFootOutput.appendChild(document.createTextNode("Square Footage Cost: " + multiplier + " x " + house.getSquareFeet()));
 			
-			// create a container for the square footage total to live in
+			// create a container for the square footage total to live in: 
+			// <div class="outputContainer">
+			// <label>Square Footage Cost:</label>
+			// <span class="costCalc">100 * 200</label>
+			// <span class="costOutput">$20000</span>
+			// </div>
+			var squareFootOutput = document.createElement("div");
+			squareFootOutput.className = "outputContainer";
+			squareFootOutputLabel = document.createElement("label");
+			squareFootOutputLabel.appendChild(document.createTextNode("Square Footage Cost: "));
+			squareFootOutput.appendChild(squareFootOutputLabel);
+			var squareFootOutputCalc = document.createElement("span");
+			squareFootOutputCalc.className = "costCalc";
+			squareFootOutputCalc.appendChild(document.createTextNode("$" + multiplier + " x " + house.getSquareFeet() + " ="));
+			squareFootOutput.appendChild(squareFootOutputCalc);	
 			var squareFootTotalContainer = document.createElement("span");
 			squareFootTotalContainer.className = "costOutput";
 			
@@ -173,13 +184,16 @@ function validate() {
 			
 			// ----------------------------------- bedrooms Cost calculation --------------------------------------
 			
-			// calculate cost for the number of bedrooms
+			// create a container for the bedrooms total to live in:
 			var bedroomsOutput = document.createElement("div");
-			house.setBedrooms(document.getElementById("bedrooms").value);
-			bedroomsOutput.appendChild(document.createTextNode("Bedrooms Cost: " + house.getBedrooms() + " x $15000"));
-			output.appendChild(bedroomsOutput);
-
-			// create a container for the bedroom total to live in
+			bedroomsOutput.className = "outputContainer";
+			bedroomsOutputLabel = document.createElement("label");
+			bedroomsOutputLabel.appendChild(document.createTextNode("Bedrooms Cost: "));
+			bedroomsOutput.appendChild(bedroomsOutputLabel);
+			var bedroomsOutputCalc = document.createElement("span");
+			bedroomsOutputCalc.className = "costCalc";
+			bedroomsOutputCalc.appendChild(document.createTextNode(house.getBedrooms() + " x $15000 = "));
+			bedroomsOutput.appendChild(bedroomsOutputCalc);
 			var bedroomsTotalContainer = document.createElement("span");
 			bedroomsTotalContainer.className = "costOutput";
 			
@@ -191,13 +205,16 @@ function validate() {
 			
 			// ---------------------------------- bathroom cost calculation -----------------------------------------
 			
-			// calculate cost for the number of bathrooms
+			// create a container for the bathrooms total to live in:
 			var bathroomsOutput = document.createElement("div");
-			house.setBathrooms(document.getElementById("bathrooms").value);
-			bathroomsOutput.appendChild(document.createTextNode("Bathrooms Cost: " + house.getBathrooms() + " x $20000"));
-			output.appendChild(bedroomsOutput);
-			
-			// create a container for the bathrooms total to live in
+			bathroomsOutput.className = "outputContainer";
+			bathroomsOutputLabel = document.createElement("label");
+			bathroomsOutputLabel.appendChild(document.createTextNode("Bathrooms Cost: "));
+			bathroomsOutput.appendChild(bathroomsOutputLabel);
+			var bathroomsOutputCalc = document.createElement("span");
+			bathroomsOutputCalc.className = "costCalc";
+			bathroomsOutputCalc.appendChild(document.createTextNode(house.getBathrooms() + " x $20000 = "));
+			bathroomsOutput.appendChild(bathroomsOutputCalc);
 			var bathroomsTotalContainer = document.createElement("span");
 			bathroomsTotalContainer.className = "costOutput";
 			
@@ -209,13 +226,16 @@ function validate() {
 
 			// ------------------------------- garage cost calculation ------------------------------------------------
 			
-			// calculate cost for the number of garage spaces
+			// create a container for the garage total to live in:
 			var garageOutput = document.createElement("div");
-			house.setGarageStalls(document.getElementById("garageStalls").value);
-			garageOutput.appendChild(document.createTextNode("Garage Cost: " + house.getGarageStalls() + " x $5000"));
-			output.appendChild(garageOutput);
-			
-			// create a container for the bathrooms total to live in
+			garageOutput.className = "outputContainer";
+			garageOutputLabel = document.createElement("label");
+			garageOutputLabel.appendChild(document.createTextNode("Garage Cost: "));
+			garageOutput.appendChild(garageOutputLabel);
+			var garageOutputCalc = document.createElement("span");
+			garageOutputCalc.className = "costCalc";
+			garageOutputCalc.appendChild(document.createTextNode(house.getGarageStalls() + " x $5000 = "));
+			garageOutput.appendChild(garageOutputCalc);
 			var garageTotalContainer = document.createElement("span");
 			garageTotalContainer.className = "costOutput";
 			
@@ -234,9 +254,21 @@ function validate() {
 				var totalCost = house.calculateCost(2, squareFeet, bedrooms, bathrooms, garageStalls);
 			}
 			// create a container for the total cost to live in
-			var totalContainer = document.createElement("div");
-			totalContainer.appendChild(document.createTextNode("Total: $" + totalCost));
-			output.appendChild(totalContainer);			
+			var totalOutput = document.createElement("div");
+			totalOutput.className = "outputContainer";
+			totalOutputLabel = document.createElement("label");
+			totalOutputLabel.appendChild(document.createTextNode("Total: "));
+			totalOutput.appendChild(totalOutputLabel);
+			var totalOutputCalc = document.createElement("span");
+			totalOutputCalc.className = "costCalc";
+			totalOutputCalc.appendChild(document.createTextNode(""));
+			totalOutput.appendChild(totalOutputCalc);
+			var totalTotalContainer = document.createElement("span");
+			totalTotalContainer.className = "costOutput";	
+			totalTotalContainer.appendChild(document.createTextNode("$" + totalCost));
+			totalOutput.appendChild(totalTotalContainer);
+			output.appendChild(totalOutput);		
+			
 						
 			// append the output to the wrapper
 			document.getElementById("wrapper").appendChild(output);
@@ -250,7 +282,142 @@ function validate() {
 			
 			// --------------------- go through and recalcate and reappend the output --------------------------
 			
+			// create an output div: <div id="output">Here is the calculation for the cost of your house:</div>
+			var output = document.createElement("div");
+			output.setAttribute("id", "output");
+			output.appendChild(document.createTextNode("Here is the calculation for the cost of your house:"));
 			
+			// Create an new instance of the house Class named house and set its values
+			var house = new House();
+			house.setSquareFeet(squareFeet);
+			house.setBedrooms(bedrooms);
+			house.setBathrooms(bathrooms);
+			house.setGarageStalls(garageStalls);
+			
+			
+			// ---------------------------------------------- squareFootage cost -----------------------------------
+			
+			// calculation for squareFootage cost 
+			if (document.getElementById("1").checked) {
+				multiplier = "115";
+			} else {
+				multiplier = "100";
+			}
+			
+			// create a container for the square footage total to live in: 
+			// <div class="outputContainer">
+			// <label>Square Footage Cost:</label>
+			// <span class="costCalc">100 * 200</label>
+			// <span class="costOutput">$20000</span>
+			// </div>
+			var squareFootOutput = document.createElement("div");
+			squareFootOutput.className = "outputContainer";
+			squareFootOutputLabel = document.createElement("label");
+			squareFootOutputLabel.appendChild(document.createTextNode("Square Footage Cost: "));
+			squareFootOutput.appendChild(squareFootOutputLabel);
+			var squareFootOutputCalc = document.createElement("span");
+			squareFootOutputCalc.className = "costCalc";
+			squareFootOutputCalc.appendChild(document.createTextNode("$" + multiplier + " x " + house.getSquareFeet() + " ="));
+			squareFootOutput.appendChild(squareFootOutputCalc);	
+			var squareFootTotalContainer = document.createElement("span");
+			squareFootTotalContainer.className = "costOutput";
+			
+			// calculate the cost based on the square footage
+			var squareFootTotal = multiplier * house.getSquareFeet();
+			squareFootTotalContainer.appendChild(document.createTextNode("$" + squareFootTotal));
+			squareFootOutput.appendChild(squareFootTotalContainer);
+			output.appendChild(squareFootOutput);
+			
+			// ----------------------------------- bedrooms Cost calculation --------------------------------------
+			
+			// create a container for the bedrooms total to live in:
+			var bedroomsOutput = document.createElement("div");
+			bedroomsOutput.className = "outputContainer";
+			bedroomsOutputLabel = document.createElement("label");
+			bedroomsOutputLabel.appendChild(document.createTextNode("Bedrooms Cost: "));
+			bedroomsOutput.appendChild(bedroomsOutputLabel);
+			var bedroomsOutputCalc = document.createElement("span");
+			bedroomsOutputCalc.className = "costCalc";
+			bedroomsOutputCalc.appendChild(document.createTextNode(house.getBedrooms() + " x $15000 = "));
+			bedroomsOutput.appendChild(bedroomsOutputCalc);
+			var bedroomsTotalContainer = document.createElement("span");
+			bedroomsTotalContainer.className = "costOutput";
+			
+			// calculate the cost based on the number of bedrooms
+			var bedroomsTotal = house.getBedrooms() * 15000;
+			bedroomsTotalContainer.appendChild(document.createTextNode("$" + bedroomsTotal));
+			bedroomsOutput.appendChild(bedroomsTotalContainer);
+			output.appendChild(bedroomsOutput);
+			
+			// ---------------------------------- bathroom cost calculation -----------------------------------------
+			
+			// create a container for the bathrooms total to live in:
+			var bathroomsOutput = document.createElement("div");
+			bathroomsOutput.className = "outputContainer";
+			bathroomsOutputLabel = document.createElement("label");
+			bathroomsOutputLabel.appendChild(document.createTextNode("Bathrooms Cost: "));
+			bathroomsOutput.appendChild(bathroomsOutputLabel);
+			var bathroomsOutputCalc = document.createElement("span");
+			bathroomsOutputCalc.className = "costCalc";
+			bathroomsOutputCalc.appendChild(document.createTextNode(house.getBathrooms() + " x $20000 = "));
+			bathroomsOutput.appendChild(bathroomsOutputCalc);
+			var bathroomsTotalContainer = document.createElement("span");
+			bathroomsTotalContainer.className = "costOutput";
+			
+			// calculate the cost based on the number of bathrooms
+			var bathroomsTotal = house.getBathrooms() * 20000;
+			bathroomsTotalContainer.appendChild(document.createTextNode("$" + bathroomsTotal));
+			bathroomsOutput.appendChild(bathroomsTotalContainer);
+			output.appendChild(bathroomsOutput);
+
+			// ------------------------------- garage cost calculation ------------------------------------------------
+			
+			// create a container for the garage total to live in:
+			var garageOutput = document.createElement("div");
+			garageOutput.className = "outputContainer";
+			garageOutputLabel = document.createElement("label");
+			garageOutputLabel.appendChild(document.createTextNode("Garage Cost: "));
+			garageOutput.appendChild(garageOutputLabel);
+			var garageOutputCalc = document.createElement("span");
+			garageOutputCalc.className = "costCalc";
+			garageOutputCalc.appendChild(document.createTextNode(house.getGarageStalls() + " x $5000 = "));
+			garageOutput.appendChild(garageOutputCalc);
+			var garageTotalContainer = document.createElement("span");
+			garageTotalContainer.className = "costOutput";
+			
+			// calculate the cost based on the number of bathrooms
+			var garageTotal = house.getGarageStalls() * 5000;
+			garageTotalContainer.appendChild(document.createTextNode("$" + garageTotal));
+			garageOutput.appendChild(garageTotalContainer);
+			output.appendChild(garageOutput);
+			
+			// -------------------------------- total cost calculation ------------------------------------------------
+			
+			// calculate the cost based on the calculateCost method
+			if (levels1.checked) {
+				var totalCost = house.calculateCost(1, squareFeet, bedrooms, bathrooms, garageStalls);
+			} else {
+				var totalCost = house.calculateCost(2, squareFeet, bedrooms, bathrooms, garageStalls);
+			}
+			// create a container for the total cost to live in
+			var totalOutput = document.createElement("div");
+			totalOutput.className = "outputContainer";
+			totalOutputLabel = document.createElement("label");
+			totalOutputLabel.appendChild(document.createTextNode("Total: "));
+			totalOutput.appendChild(totalOutputLabel);
+			var totalOutputCalc = document.createElement("span");
+			totalOutputCalc.className = "costCalc";
+			totalOutputCalc.appendChild(document.createTextNode(""));
+			totalOutput.appendChild(totalOutputCalc);
+			var totalTotalContainer = document.createElement("span");
+			totalTotalContainer.className = "costOutput";	
+			totalTotalContainer.appendChild(document.createTextNode("$" + totalCost));
+			totalOutput.appendChild(totalTotalContainer);
+			output.appendChild(totalOutput);		
+			
+						
+			// append the output to the wrapper
+			document.getElementById("wrapper").appendChild(output);
 		}
 	
 	// if there are errors introduced define a removeOutput variable	

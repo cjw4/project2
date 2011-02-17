@@ -17,7 +17,7 @@ form {
 label {
 	font-size:18px;
 	font-weight:100;
-	width:150px;
+	width:180px;
 	display:inline-block;
 }
 input[type="button"] {
@@ -36,5 +36,14 @@ input[type="button"] {
 	margin:10px 5px;
 }
 .costOutput {
-	border:solid green;
+	color:blue;
+	font-size:18px;
+}
+.costCalc {
+	font-size:18px;
+	width:120px;
+	display:inline-block;
+}
+#output {
+	font-size: 20px;
 }
